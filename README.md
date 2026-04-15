@@ -6,7 +6,7 @@ YAAY adds the /imgui menu flow to Yamipa with a paginated GUI, anti-exploit prot
 
 <p align="center">
     <a href="https://i.imgur.com/fCYMsAw.mp4">
-        <video src="https://i.imgur.com/fCYMsAw.mp4" width="800" autoplay loop muted playsinline></video>
+        <video src="https://i.imgur.com/fCYMsAw.mp4" autoplay loop muted playsinline></video>
     </a>
 </p>
 
