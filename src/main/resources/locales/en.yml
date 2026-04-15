@@ -1,0 +1,67 @@
+messages:
+  players-only: "Only players can use this command"
+  no-permission: "You do not have permission"
+  loading: "Loading menu..."
+  reloaded: "Configuration reloaded"
+  auto-reloaded: "Configuration auto-reloaded"
+  reload-failed: "Failed to reload configuration"
+  menu-empty: "There are no visible images available"
+  item-given: "You received {amount} image item(s): {filename}"
+  inventory-full: "You need free inventory space"
+  image-unavailable: "This image is no longer available"
+  claim-cooldown: "Please wait before claiming again"
+  hourly-limit-reached: "You reached your hourly limit ({limit})"
+  invalid-page: "That page does not exist"
+  language-changed: "Language changed to {language}"
+  language-change-cooldown: "Please wait {remaining_seconds}s before changing language again"
+  language-change-unavailable: "Language could not be changed"
+
+gui:
+  title: "&0Image Claim Menu"
+  filler:
+    name: " "
+    lore: []
+  image-icon:
+    name: "&f{filename}"
+    lore:
+      - "&7Click to claim"
+      - "&8Page {current_page}/{max_page}"
+  navigation:
+    previous:
+      name: "&ePrevious page"
+      lore:
+        - "&7Go to page {target_page}"
+    refresh:
+      name: "&bRefresh"
+      lore:
+        - "&7Reload this page"
+    language:
+      name: "&aLanguage"
+      lore:
+        - "&7Current: &f{language}"
+        - "&7Click to change"
+    info:
+      name: "&fInfo"
+      lore:
+        - "&7{current_page}/{max_page}"
+        - "&7Visible images: {count}"
+    close:
+      name: "&cClose"
+      lore:
+        - "&7Close this menu"
+    next:
+      name: "&eNext page"
+      lore:
+        - "&7Go to page {target_page}"
+  empty-state:
+    name: "&7No available images"
+    lore:
+      - "&8Try again later"
+
+item:
+  name-format: "&b{filename}"
+  lore: []
+
+languages:
+  en: "English"
+  es: "Spanish"

@@ -1,0 +1,37 @@
+enabled: true
+
+language:
+  use-player-locale: false
+  change-cooldown-ms: 0
+  fallback-language: en
+  prefix: "&8[&bImgui&8] &7"
+
+command:
+  use-permission: yamipa.imgui.use
+  reload-permission: yamipa.imgui.reload
+  reload-subcommand-enabled: true
+
+visibility:
+  require-public-or-own: true
+  own-path-pattern: "^private/#player#/.+"
+  public-path-pattern: "^public/.+"
+
+item:
+  material: ITEM_FRAME
+  amount: 1
+  width: 3
+  height: 0
+  auto-height: true
+  flags: 7
+  name-format: "&b{filename}"
+  clear-lore: true
+  lore: []
+
+performance:
+  async-open: true
+  cache-ttl-ms: 5000
+
+reload:
+  close-open-menus: false
+  auto-reload-enabled: true
+  auto-reload-debounce-ms: 800

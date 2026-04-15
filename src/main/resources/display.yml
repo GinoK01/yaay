@@ -1,0 +1,57 @@
+# Per-path display and item overrides for /imgui.
+#
+# What this file is for:
+# - Customize GUI name/lore and claimed-item metadata for specific image paths.
+# - Keep defaults from config.yml when a path has no entry.
+# - Use multi-language values with fallback-language support.
+#
+# Path rules:
+# - "path" must match the image filename relative to plugins/YamipaPlugin/images.
+#
+# Placeholders available in name/lore:
+# - {filename} / {basename}: file name without folders and without extension
+# - {filepath}: full relative path in Yamipa images folder without extension
+# - {amount}: stack amount of the claimed item
+# - {width}, {height}: final width/height stored in Yamipa item metadata
+#
+# Per-entry item options (same behavior as Yamipa command arguments):
+# - amount: same as <amount> in /image give (1..64)
+# - width: same as <w> in /image give
+# - height: same as [h] in /image give; use 0 with auto-height=true for proportional height
+# - auto-height: if true and height=0, height is auto-calculated from image ratio
+# - flags: same image flags model as Yamipa commands
+#   - integer value (example: 7)
+#   - names list/string (ANIM, REMO, DROP, GLOW)
+#   - relative ops (example: +GLOW,-DROP) based on Yamipa default give flags
+# - material: optional Bukkit material for the claimed item stack
+
+entries:
+  # Full example with all item options + multilingual text
+  # - path: "public/logo.png"
+  #   item:
+  #     amount: 1
+  #     width: 3
+  #     height: 0
+  #     auto-height: true
+  #     flags: "+GLOW,-DROP"
+  #     material: ITEM_FRAME
+  #   name:
+  #     default: "&bServer Logo"
+  #     es: "&bLogo del servidor"
+  #   lore:
+  #     default:
+  #       - "&7Main logo image"
+  #       - "&7Size: &f{width}x{height}"
+  #     es:
+  #       - "&7Imagen principal del servidor"
+  #       - "&7Tamano: &f{width}x{height}"
+
+  # Minimal shorthand example (default language only)
+  # - path: "public/banner.png"
+  #   item:
+  #     width: 4
+  #     height: 2
+  #     flags: "ANIM,REMO,DROP"
+  #   name: "&6Banner"
+  #   lore:
+  #     - "&7Claimable banner image"

@@ -1,0 +1,16 @@
+hourly-limit:
+  enabled: true
+  max-items-per-hour: 64
+
+claim-rate-limit:
+  enabled: true
+  cooldown-ms: 200
+
+anti-exploit:
+  strict-inventory-lock: true
+  block-shift-click: true
+  block-number-key: true
+  block-collect-to-cursor: true
+  block-drag: true
+  block-creative-actions: true
+  claim-lock-enabled: true

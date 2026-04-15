@@ -1,0 +1,18 @@
+name: YAAY
+version: ${project.version}
+main: io.josemmo.bukkit.plugin.addon.imgui.ImguiAddonPlugin
+api-version: 1.16
+folia-supported: true
+depend: [YamipaPlugin]
+description: "Yes, Another Addon for Yamipa"
+
+commands:
+  imgui:
+    description: Open image claim GUI
+    usage: /imgui [reload]
+
+permissions:
+  yamipa.imgui.use:
+    default: true
+  yamipa.imgui.reload:
+    default: op

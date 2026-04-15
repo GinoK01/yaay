@@ -1,0 +1,67 @@
+messages:
+  players-only: "Solo jugadores pueden usar este comando"
+  no-permission: "No tienes permiso"
+  loading: "Cargando menu..."
+  reloaded: "Configuracion recargada"
+  auto-reloaded: "Configuracion recargada automaticamente"
+  reload-failed: "No se pudo recargar la configuracion"
+  menu-empty: "No hay imagenes visibles disponibles"
+  item-given: "Recibiste {amount} item(s) de imagen: {filename}"
+  inventory-full: "Necesitas espacio libre en el inventario"
+  image-unavailable: "Esta imagen ya no esta disponible"
+  claim-cooldown: "Espera un momento antes de reclamar otra vez"
+  hourly-limit-reached: "Alcanzaste tu limite por hora ({limit})"
+  invalid-page: "Esa pagina no existe"
+  language-changed: "Idioma cambiado a {language}"
+  language-change-cooldown: "Espera {remaining_seconds}s antes de cambiar idioma otra vez"
+  language-change-unavailable: "No se pudo cambiar el idioma"
+
+gui:
+  title: "&0Menu de Imagenes"
+  filler:
+    name: " "
+    lore: []
+  image-icon:
+    name: "&f{filename}"
+    lore:
+      - "&7Clic para reclamar"
+      - "&8Pagina {current_page}/{max_page}"
+  navigation:
+    previous:
+      name: "&ePagina anterior"
+      lore:
+        - "&7Ir a la pagina {target_page}"
+    refresh:
+      name: "&bActualizar"
+      lore:
+        - "&7Recargar esta pagina"
+    language:
+      name: "&aIdioma"
+      lore:
+        - "&7Actual: &f{language}"
+        - "&7Clic para cambiar"
+    info:
+      name: "&fInformacion"
+      lore:
+        - "&7{current_page}/{max_page}"
+        - "&7Imagenes visibles: {count}"
+    close:
+      name: "&cCerrar"
+      lore:
+        - "&7Cerrar este menu"
+    next:
+      name: "&ePagina siguiente"
+      lore:
+        - "&7Ir a la pagina {target_page}"
+  empty-state:
+    name: "&7No hay imagenes disponibles"
+    lore:
+      - "&8Intenta nuevamente mas tarde"
+
+item:
+  name-format: "&b{filename}"
+  lore: []
+
+languages:
+  en: "Ingles"
+  es: "Espanol"
