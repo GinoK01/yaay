@@ -4,8 +4,8 @@ This page documents every addon configuration file and key.
 
 ## File map
 
-- `config.yml`: global behavior, language, command access, visibility, claim item defaults, reload and performance options.
-- `gui.yml`: inventory menu layout and navigation items.
+- `config.yml`: global behavior, language, command access, visibility, claim item base options, reload and performance options.
+- `gui.yml`: inventory menu layout, slot positions, and icon materials.
 - `limits.yml`: anti-exploit and rate limits.
 - `display.yml`: per-path display and item option overrides.
 - `locales/*.yml`: localized chat, GUI, and item templates.
@@ -53,9 +53,7 @@ This page documents every addon configuration file and key.
 | item.height | int | 0 | Base image height. If 0 and auto-height true, calculated proportionally. |
 | item.auto-height | boolean | true | Enables proportional height when height <= 0. |
 | item.flags | int | 7 | Default Yamipa image flags. |
-| item.name-format | string | &b{filename} | Default item display name template. |
 | item.clear-lore | boolean | true | Clears lore when no custom lore override exists. |
-| item.lore | string list | [] | Default item lore template list. |
 
 ### performance
 
@@ -78,7 +76,6 @@ This page documents every addon configuration file and key.
 
 | Key | Type | Default | Description |
 |---|---|---|---|
-| title | string | &0Image Claim Menu | Inventory title (can also be overridden by locale `gui.title`). |
 | rows | int | 6 | Inventory rows (1..6). |
 | content-slots | int list | 0..44 | Slots used for image entries. |
 
@@ -88,16 +85,12 @@ This page documents every addon configuration file and key.
 |---|---|---|---|
 | filler.enabled | boolean | true | Fills unused slots with filler item. |
 | filler.material | string | GRAY_STAINED_GLASS_PANE | Filler material. |
-| filler.name | string | " " | Filler display name. |
-| filler.lore | string list | [] | Filler lore. |
 
 ### image-icon
 
 | Key | Type | Default | Description |
 |---|---|---|---|
 | image-icon.material | string | PAPER | Material for image list icon. |
-| image-icon.name-format | string | &f{filename} | Default icon name template. |
-| image-icon.lore | string list | See default | Default icon lore template list. |
 
 ### navigation
 
@@ -107,8 +100,6 @@ For each navigation item (`previous`, `refresh`, `language`, `info`, `close`, `n
 |---|---|---|
 | navigation.<node>.slot | int | Slot position in inventory. |
 | navigation.<node>.material | string | Item material. |
-| navigation.<node>.name | string | Display name template. |
-| navigation.<node>.lore | string list | Lore template list. |
 
 Additional key for language node:
 
@@ -122,8 +113,6 @@ Additional key for language node:
 |---|---|---|---|
 | empty-state.slot | int | 22 | Slot to show empty-state icon. |
 | empty-state.material | string | CHEST_MINECART | Empty-state material. |
-| empty-state.name | string | &7No available images | Empty-state name. |
-| empty-state.lore | string list | See default | Empty-state lore. |
 
 ## limits.yml
 
@@ -236,12 +225,14 @@ Supported formats:
 - `item.*` for claim item templates.
 - `languages.*` for language labels shown in selector.
 
+Text templates are locale-only. `gui.yml` and `config.yml` no longer define GUI/item message templates.
+
 ### Locale fallback behavior
 
 When a key is missing in current language:
 
 1. Addon tries fallback language file (`language.fallback-language`).
-2. If still missing, addon uses built-in/default template fallback from config path.
+2. If still missing, addon uses built-in default template fallback.
 
 ## Placeholder reference
 

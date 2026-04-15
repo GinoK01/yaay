@@ -29,7 +29,7 @@ The addon provides a secure, paginated GUI to claim Yamipa images as items, with
 1. Build the project with `build-all.bat` from repository root.
 2. Copy addon jar from `extensions/yamipa-imgui-addon/target` to your server `plugins` folder.
 3. Start server once to generate addon config files.
-4. Edit `config.yml`, `gui.yml`, `limits.yml`, `display.yml`, and locale files as needed.
+4. Edit `config.yml`, `gui.yml`, `limits.yml`, `display.yml`, and locale files as needed. All message templates are defined in locale files.
 5. Run `/imgui reload` or restart.
 6. Open menu with `/imgui`.
 
@@ -58,10 +58,10 @@ The addon stores data in:
 
 ## Related Project Files
 
-- `yamipa-imgui-addon/src/main/resources/plugin.yml`
-- `yamipa-imgui-addon/src/main/resources/config.yml`
-- `yamipa-imgui-addon/src/main/resources/gui.yml`
-- `yamipa-imgui-addon/src/main/resources/limits.yml`
-- `yamipa-imgui-addon/src/main/resources/display.yml`
-- `yamipa-imgui-addon/src/main/resources/locales/en.yml`
-- `yamipa-imgui-addon/src/main/resources/locales/es.yml`
+- `src/main/resources/plugin.yml`
+- `src/main/resources/config.yml`
+- `src/main/resources/gui.yml`
+- `src/main/resources/limits.yml`
+- `src/main/resources/display.yml`
+- `src/main/resources/locales/en.yml`
+- `src/main/resources/locales/es.yml`

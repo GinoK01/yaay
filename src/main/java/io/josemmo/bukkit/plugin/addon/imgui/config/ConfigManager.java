@@ -59,9 +59,9 @@ public class ConfigManager {
         int claimItemHeight = Math.max(0, config.getInt("item.height", 0));
         boolean claimItemAutoHeight = config.getBoolean("item.auto-height", true);
         int claimItemFlags = Math.max(0, config.getInt("item.flags", 7));
-        String claimItemNameFormat = config.getString("item.name-format", "&b{filename}");
+        String claimItemNameFormat = "&b{filename}";
         boolean claimItemClearLore = config.getBoolean("item.clear-lore", true);
-        List<String> claimItemLore = nonNullStringList(config.getStringList("item.lore"));
+        List<String> claimItemLore = Collections.emptyList();
 
         boolean asyncOpen = config.getBoolean("performance.async-open", true);
         long cacheTtlMs = Math.max(0L, config.getLong("performance.cache-ttl-ms", 5000L));
@@ -70,7 +70,7 @@ public class ConfigManager {
         boolean autoReloadEnabled = config.getBoolean("reload.auto-reload-enabled", true);
         long autoReloadDebounceMs = Math.max(0L, config.getLong("reload.auto-reload-debounce-ms", 800L));
 
-        String menuTitle = gui.getString("title", "&0Image Claim Menu");
+        String menuTitle = "&0Image Claim Menu";
         int menuRows = clamp(gui.getInt("rows", 6), 1, 6);
         List<Integer> contentSlots = sanitizeSlots(gui.getIntegerList("content-slots"), menuRows * 9);
         if (contentSlots.isEmpty()) {
@@ -79,48 +79,48 @@ public class ConfigManager {
 
         boolean fillerEnabled = gui.getBoolean("filler.enabled", true);
         Material fillerMaterial = parseMaterial(gui.getString("filler.material", "GRAY_STAINED_GLASS_PANE"), Material.GRAY_STAINED_GLASS_PANE);
-        String fillerName = gui.getString("filler.name", " ");
-        List<String> fillerLore = nonNullStringList(gui.getStringList("filler.lore"));
+        String fillerName = " ";
+        List<String> fillerLore = Collections.emptyList();
 
         Material imageIconMaterial = parseMaterial(gui.getString("image-icon.material", "PAPER"), Material.PAPER);
-        String imageIconNameFormat = gui.getString("image-icon.name-format", "&f{filename}");
-        List<String> imageIconLore = nonNullStringList(gui.getStringList("image-icon.lore"));
+        String imageIconNameFormat = "&f{filename}";
+        List<String> imageIconLore = Arrays.asList("&7Click to claim", "&8Page {current_page}/{max_page}");
 
         int previousSlot = clamp(gui.getInt("navigation.previous.slot", menuRows * 9 - 9), 0, menuRows * 9 - 1);
         Material previousMaterial = parseMaterial(gui.getString("navigation.previous.material", "ARROW"), Material.ARROW);
-        String previousName = gui.getString("navigation.previous.name", "&ePrevious page");
-        List<String> previousLore = nonNullStringList(gui.getStringList("navigation.previous.lore"));
+        String previousName = "&ePrevious page";
+        List<String> previousLore = Collections.singletonList("&7Go to page {target_page}");
 
         int nextSlot = clamp(gui.getInt("navigation.next.slot", menuRows * 9 - 1), 0, menuRows * 9 - 1);
         Material nextMaterial = parseMaterial(gui.getString("navigation.next.material", "ARROW"), Material.ARROW);
-        String nextName = gui.getString("navigation.next.name", "&eNext page");
-        List<String> nextLore = nonNullStringList(gui.getStringList("navigation.next.lore"));
+        String nextName = "&eNext page";
+        List<String> nextLore = Collections.singletonList("&7Go to page {target_page}");
 
         int refreshSlot = clamp(gui.getInt("navigation.refresh.slot", menuRows * 9 - 5), 0, menuRows * 9 - 1);
         Material refreshMaterial = parseMaterial(gui.getString("navigation.refresh.material", "SUNFLOWER"), Material.SUNFLOWER);
-        String refreshName = gui.getString("navigation.refresh.name", "&bRefresh");
-        List<String> refreshLore = nonNullStringList(gui.getStringList("navigation.refresh.lore"));
+        String refreshName = "&bRefresh";
+        List<String> refreshLore = Collections.singletonList("&7Reload this page");
 
         boolean languageMenuEnabled = gui.getBoolean("navigation.language.enabled", true);
         int languageSlot = clamp(gui.getInt("navigation.language.slot", menuRows * 9 - 6), 0, menuRows * 9 - 1);
         Material languageMaterial = parseMaterial(gui.getString("navigation.language.material", "GLOBE_BANNER_PATTERN"), Material.BOOK);
-        String languageName = gui.getString("navigation.language.name", "&aLanguage");
-        List<String> languageLore = nonNullStringList(gui.getStringList("navigation.language.lore"));
+        String languageName = "&aLanguage";
+        List<String> languageLore = Arrays.asList("&7Current: &f{language}", "&7Click to change");
 
         int infoSlot = clamp(gui.getInt("navigation.info.slot", menuRows * 9 - 4), 0, menuRows * 9 - 1);
         Material infoMaterial = parseMaterial(gui.getString("navigation.info.material", "BOOK"), Material.BOOK);
-        String infoName = gui.getString("navigation.info.name", "&fInfo");
-        List<String> infoLore = nonNullStringList(gui.getStringList("navigation.info.lore"));
+        String infoName = "&fInfo";
+        List<String> infoLore = Arrays.asList("&7{current_page}/{max_page}", "&7Visible images: {count}");
 
         int closeSlot = clamp(gui.getInt("navigation.close.slot", menuRows * 9 - 1), 0, menuRows * 9 - 1);
         Material closeMaterial = parseMaterial(gui.getString("navigation.close.material", "BARRIER"), Material.BARRIER);
-        String closeName = gui.getString("navigation.close.name", "&cClose");
-        List<String> closeLore = nonNullStringList(gui.getStringList("navigation.close.lore"));
+        String closeName = "&cClose";
+        List<String> closeLore = Collections.singletonList("&7Close this menu");
 
         int emptySlot = clamp(gui.getInt("empty-state.slot", menuRows * 9 / 2), 0, menuRows * 9 - 1);
         Material emptyMaterial = parseMaterial(gui.getString("empty-state.material", "CHEST_MINECART"), Material.CHEST_MINECART);
-        String emptyName = gui.getString("empty-state.name", "&7No available images");
-        List<String> emptyLore = nonNullStringList(gui.getStringList("empty-state.lore"));
+        String emptyName = "&7No available images";
+        List<String> emptyLore = Collections.singletonList("&8Try again later");
 
         boolean hourlyLimitEnabled = limits.getBoolean("hourly-limit.enabled", true);
         int hourlyLimitMaxItems = Math.max(1, limits.getInt("hourly-limit.max-items-per-hour", 64));

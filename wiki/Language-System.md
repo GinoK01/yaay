@@ -35,10 +35,6 @@ navigation:
     enabled: true
     slot: 48
     material: GLOBE_BANNER_PATTERN
-    name: "&aLanguage"
-    lore:
-      - "&7Current: &f{language}"
-      - "&7Click to change"
 ```
 
 Behavior:
@@ -110,5 +106,5 @@ Each language file (`locales/en.yml`, `locales/es.yml`, or custom) can include:
 ## Fallback behavior by key type
 
 - Chat keys: fallback to fallback-language message key, then key literal.
-- GUI and item templates: fallback to fallback-language key, then config template default.
+- GUI and item templates: fallback to fallback-language key, then built-in template default.
 - Display per-path localized values: fallback chain includes exact language, base language, fallback language, and `default` override key.

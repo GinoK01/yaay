@@ -23,9 +23,7 @@ item:
   height: 0
   auto-height: true
   flags: 7
-  name-format: "&b{filename}"
   clear-lore: true
-  lore: []
 
 performance:
   async-open: true

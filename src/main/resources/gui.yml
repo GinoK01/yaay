@@ -1,4 +1,3 @@
-title: "&0Image Claim Menu"
 rows: 6
 
 content-slots:
@@ -51,60 +50,31 @@ content-slots:
 filler:
   enabled: true
   material: GRAY_STAINED_GLASS_PANE
-  name: " "
-  lore: []
 
 image-icon:
   material: PAPER
-  name-format: "&f{filename}"
-  lore:
-    - "&7Click to claim"
-    - "&8Page {page}/{max_page}"
 
 navigation:
   previous:
-    slot: 45
+    slot: 47
     material: ARROW
-    name: "&ePrevious page"
-    lore:
-      - "&7Go to page {target_page}"
   refresh:
     slot: 49
     material: SUNFLOWER
-    name: "&bRefresh"
-    lore:
-      - "&7Reload this page"
   language:
     enabled: true
     slot: 48
     material: GLOBE_BANNER_PATTERN
-    name: "&aLanguage"
-    lore:
-      - "&7Current: &f{language}"
-      - "&7Click to change"
   info:
     slot: 50
     material: BOOK
-    name: "&fInfo"
-    lore:
-      - "&7{current_page}/{max_page}"
-      - "&7Visible images: {count}"
   close:
     slot: 53
     material: BARRIER
-    name: "&cClose"
-    lore:
-      - "&7Close this menu"
   next:
     slot: 51
     material: ARROW
-    name: "&eNext page"
-    lore:
-      - "&7Go to page {target_page}"
 
 empty-state:
   slot: 22
   material: CHEST_MINECART
-  name: "&7No available images"
-  lore:
-    - "&8Try again later"
