@@ -5,9 +5,7 @@ Yes, Another Addon for Yamipa.
 YAAY adds the /imgui menu flow to Yamipa with a paginated GUI, anti-exploit protections, hourly limits, language support, and per-path overrides.
 
 <p align="center">
-    <a href="https://i.imgur.com/fCYMsAw.mp4">
-        <video src="https://i.imgur.com/fCYMsAw.mp4" autoplay loop muted playsinline></video>
-    </a>
+    <a href="imgur.com/a/W5IZJDc"><img src="https://i.imgur.com/fe19mi6.gif" autoplay loop muted playsinline></img></a>
 </p>
 
 ## License
