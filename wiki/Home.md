@@ -58,10 +58,10 @@ The addon stores data in:
 
 ## Related Project Files
 
-- `extensions/yamipa-imgui-addon/src/main/resources/plugin.yml`
-- `extensions/yamipa-imgui-addon/src/main/resources/config.yml`
-- `extensions/yamipa-imgui-addon/src/main/resources/gui.yml`
-- `extensions/yamipa-imgui-addon/src/main/resources/limits.yml`
-- `extensions/yamipa-imgui-addon/src/main/resources/display.yml`
-- `extensions/yamipa-imgui-addon/src/main/resources/locales/en.yml`
-- `extensions/yamipa-imgui-addon/src/main/resources/locales/es.yml`
+- `yamipa-imgui-addon/src/main/resources/plugin.yml`
+- `yamipa-imgui-addon/src/main/resources/config.yml`
+- `yamipa-imgui-addon/src/main/resources/gui.yml`
+- `yamipa-imgui-addon/src/main/resources/limits.yml`
+- `yamipa-imgui-addon/src/main/resources/display.yml`
+- `yamipa-imgui-addon/src/main/resources/locales/en.yml`
+- `yamipa-imgui-addon/src/main/resources/locales/es.yml`
