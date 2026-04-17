@@ -3,6 +3,8 @@ version: ${project.version}
 main: io.josemmo.bukkit.plugin.addon.imgui.ImguiAddonPlugin
 api-version: 1.16
 folia-supported: true
+libraries:
+  - org.xerial:sqlite-jdbc:3.46.1.3
 depend: [YamipaPlugin]
 description: "Yes, Another Addon for Yamipa"
 

@@ -30,6 +30,7 @@ This project is released under the MIT License, same as Yamipa.
 - Java 8+
 - Paper/Folia compatible server
 - Yamipa core plugin installed on the server
+- If the server has no internet access, pre-cache `sqlite-jdbc` or use an offline build that shades it back in
 
 ## Build inside this monorepo
 
@@ -42,7 +43,6 @@ build-all.bat
 Build only the addon:
 
 ```bat
-cd extensions\yamipa-imgui-addon
 mvn -DskipTests package
 ```
 
@@ -53,7 +53,7 @@ If you extract only this folder into a new repository, update the core jar path 
 Current setting:
 
 ```xml
-<yamipa.core.jar>${project.basedir}/../../target/YamipaPlugin-${yamipa.core.version}.jar</yamipa.core.jar>
+<yamipa.core.jar>${project.basedir}/../yamipa/target/YamipaPlugin-${yamipa.core.version}.jar</yamipa.core.jar>
 ```
 
 Typical standalone setting:
