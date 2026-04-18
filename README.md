@@ -32,36 +32,6 @@ This project is released under the MIT License, same as Yamipa.
 - Yamipa core plugin installed on the server
 - If the server has no internet access, pre-cache `sqlite-jdbc` or use an offline build that shades it back in
 
-## Build inside this monorepo
-
-From repository root:
-
-```bat
-build-all.bat
-```
-
-Build only the addon:
-
-```bat
-mvn -DskipTests package
-```
-
-## Publish as a standalone repository
-
-If you extract only this folder into a new repository, update the core jar path in pom.xml.
-
-Current setting:
-
-```xml
-<yamipa.core.jar>${project.basedir}/../yamipa/target/YamipaPlugin-${yamipa.core.version}.jar</yamipa.core.jar>
-```
-
-Typical standalone setting:
-
-```xml
-<yamipa.core.jar>${project.basedir}/libs/YamipaPlugin-${yamipa.core.version}.jar</yamipa.core.jar>
-```
-
 Standalone build flow:
 
 1. Create a libs directory in the addon repository.
