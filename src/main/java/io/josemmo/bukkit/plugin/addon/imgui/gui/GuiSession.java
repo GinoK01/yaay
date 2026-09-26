@@ -10,12 +10,15 @@ public class GuiSession {
     private final UUID playerId;
     private final long token;
     private int page;
+    private List<String> allFilenames;
     private List<String> filenames;
+    private String searchQuery;
     private final Map<Integer, String> slotToFilename = new HashMap<Integer, String>();
 
     public GuiSession(UUID playerId, long token, List<String> filenames, int page) {
         this.playerId = playerId;
         this.token = token;
+        this.allFilenames = new ArrayList<String>(filenames);
         this.filenames = new ArrayList<String>(filenames);
         this.page = page;
     }
@@ -42,6 +45,22 @@ public class GuiSession {
 
     public void setFilenames(List<String> filenames) {
         this.filenames = new ArrayList<String>(filenames);
+    }
+
+    public List<String> getAllFilenames() {
+        return allFilenames;
+    }
+
+    public void setAllFilenames(List<String> allFilenames) {
+        this.allFilenames = new ArrayList<String>(allFilenames);
+    }
+
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
     }
 
     public Map<Integer, String> getSlotToFilename() {

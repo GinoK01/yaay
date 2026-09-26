@@ -10,7 +10,9 @@ import io.josemmo.bukkit.plugin.addon.imgui.util.ImageItemFactory;
 import io.josemmo.bukkit.plugin.addon.imgui.util.InventoryUtil;
 import io.josemmo.bukkit.plugin.addon.imgui.util.Texts;
 import io.josemmo.bukkit.plugin.storage.ImageFile;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -27,7 +29,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -44,7 +48,10 @@ public class GuiService {
     private final Map<UUID, Long> lastClaimAt = new ConcurrentHashMap<UUID, Long>();
     private final Map<UUID, Long> lastLanguageChangeAt = new ConcurrentHashMap<UUID, Long>();
     private final Set<UUID> claimLocks = Collections.newSetFromMap(new ConcurrentHashMap<UUID, Boolean>());
+    private final AtomicInteger searchGeneration = new AtomicInteger(0);
+    private final Map<UUID, SearchPrompt> searchPrompts = new ConcurrentHashMap<UUID, SearchPrompt>();
     private volatile AddonSettings settings;
+    private EditorService editorService;
 
     public GuiService(
         ImguiAddonPlugin plugin,
@@ -58,6 +65,10 @@ public class GuiService {
         this.localeService = localeService;
         this.displayMetadataService = displayMetadataService;
         this.hourlyLimitService = hourlyLimitService;
+    }
+
+    public void setEditorService(EditorService editorService) {
+        this.editorService = editorService;
     }
 
     public void applySettings(AddonSettings settings) {
@@ -74,6 +85,37 @@ public class GuiService {
     }
 
     public void openMenu(Player player, int requestedPage) {
+        if (player != null) {
+            searchPrompts.remove(player.getUniqueId());
+        }
+        openMenuKeepingPrompt(player, requestedPage, null);
+    }
+
+    public boolean consumeSearchChat(Player player, String text) {
+        if (player == null || !searchPrompts.containsKey(player.getUniqueId())) {
+            return false;
+        }
+
+        final SearchPrompt prompt = searchPrompts.remove(player.getUniqueId());
+        if (prompt == null) {
+            return false;
+        }
+
+        final String message = text == null ? "" : text;
+        player.getScheduler().run(plugin, new Consumer<ScheduledTask>() {
+            @Override
+            public void accept(ScheduledTask scheduledTask) {
+                applySearchPrompt(player, prompt, message);
+            }
+        }, null);
+        return true;
+    }
+
+    private void openMenuKeepingPrompt(Player player, int requestedPage, String searchQuery) {
+        if (player != null && editorService != null && editorService.hasHeldItem(player.getUniqueId())) {
+            editorService.openEditor(player);
+            return;
+        }
         AddonSettings localSettings = settings;
         if (localSettings == null || !localSettings.isEnabled()) {
             return;
@@ -83,7 +125,7 @@ public class GuiService {
         if (filenames.isEmpty()) {
             player.sendMessage(localeService.tr(player, "menu-empty"));
         }
-        openWithData(player, filenames, requestedPage);
+        openWithData(player, filenames, requestedPage, searchQuery);
     }
 
     public void handleTopClick(Player player, int rawSlot, ClickType clickType) {
@@ -130,6 +172,18 @@ public class GuiService {
 
         if (rawSlot == localSettings.getCloseSlot()) {
             player.closeInventory();
+            return;
+        }
+
+        if (localSettings.isSearchEnabled() && rawSlot == localSettings.getSearchSlot()) {
+            handleSearchClick(player, session, clickType);
+            return;
+        }
+
+        if (localSettings.isEditorEnabled() && rawSlot == localSettings.getEditorSlot()) {
+            if (editorService != null) {
+                editorService.openEditor(player);
+            }
             return;
         }
 
@@ -181,6 +235,7 @@ public class GuiService {
         claimLocks.remove(playerId);
         lastClaimAt.remove(playerId);
         lastLanguageChangeAt.remove(playerId);
+        searchPrompts.remove(playerId);
     }
 
     public void clearCache(UUID playerId) {
@@ -197,6 +252,7 @@ public class GuiService {
         sessions.clear();
         claimLocks.clear();
         lastLanguageChangeAt.clear();
+        searchPrompts.clear();
     }
 
     private void refreshOpenMenus() {
@@ -216,7 +272,8 @@ public class GuiService {
     private void refreshMenu(Player player, GuiSession session) {
         clearCache(player.getUniqueId());
         List<String> filenames = getVisibleFilenames(player);
-        session.setFilenames(filenames);
+        session.setAllFilenames(filenames);
+        session.setFilenames(filterFilenames(player, filenames, session.getSearchQuery()));
         int maxPages = session.getMaxPages(settings.getContentSlots().size());
         if (session.getPage() > maxPages) {
             session.setPage(maxPages);
@@ -224,22 +281,27 @@ public class GuiService {
         rerenderOpenMenu(player, session);
     }
 
-    private void openWithData(Player player, List<String> filenames, int requestedPage) {
+    private void openWithData(Player player, List<String> filenames, int requestedPage, String searchQuery) {
         AddonSettings localSettings = settings;
         if (localSettings == null) {
             return;
         }
 
         int itemsPerPage = Math.max(1, localSettings.getContentSlots().size());
-        int maxPages = Math.max(1, (int) Math.ceil((double) Math.max(1, filenames.size()) / (double) itemsPerPage));
-        int page = Math.max(1, Math.min(requestedPage, maxPages));
+        int page = Math.max(1, requestedPage);
 
         long token = tokenCounter.incrementAndGet();
         GuiSession session = new GuiSession(player.getUniqueId(), token, filenames, page);
+        session.setSearchQuery(normalizeQuery(searchQuery));
+        session.setFilenames(filterFilenames(player, session.getAllFilenames(), session.getSearchQuery()));
+        int maxPages = session.getMaxPages(itemsPerPage);
+        if (session.getPage() > maxPages) {
+            session.setPage(maxPages);
+        }
         sessions.put(player.getUniqueId(), session);
 
         ImguiMenuHolder holder = new ImguiMenuHolder(player.getUniqueId(), token);
-        Map<String, String> placeholders = createPagePlaceholders(session, filenames.size());
+        Map<String, String> placeholders = createPagePlaceholders(session, session.getFilenames().size());
         String titleTemplate = localeService.trRaw(
             player,
             "gui.title",
@@ -276,6 +338,9 @@ public class GuiService {
 
         inventory.clear();
 
+        boolean showCatalogEmpty = session.getAllFilenames().isEmpty();
+        boolean showSearchEmpty = !showCatalogEmpty && session.getFilenames().isEmpty() && session.getSearchQuery() != null;
+        int emptySlot = localSettings.getEmptySlot();
         if (localSettings.isFillerEnabled()) {
             ItemStack filler = createIcon(
                 localSettings.getFillerMaterial(),
@@ -284,6 +349,9 @@ public class GuiService {
                 Collections.<String, String>emptyMap()
             );
             for (int i = 0; i < inventory.getSize(); i++) {
+                if ((showCatalogEmpty || showSearchEmpty) && i == emptySlot) {
+                    continue;
+                }
                 inventory.setItem(i, filler);
             }
         }
@@ -325,9 +393,24 @@ public class GuiService {
                 imageIconNameTemplate,
                 imageIconLoreTemplate
             );
+            ImageFile imageFile = corePlugin.getStorage().get(filename);
+            ImageItemFactory.ResolvedSize resolvedSize = ImageItemFactory.resolveSize(
+                player,
+                imageFile,
+                localSettings,
+                displayMetadata
+            );
+            placeholders.put("width", String.valueOf(resolvedSize.getWidth()));
+            placeholders.put("height", String.valueOf(resolvedSize.getHeight()));
+            String iconName = ImageItemFactory.appendSizeSuffixIfNeeded(
+                displayMetadata.getNameTemplate(),
+                displayMetadata.getLoreTemplates(),
+                resolvedSize.getWidth(),
+                resolvedSize.getHeight()
+            );
             ItemStack icon = createIcon(
                 localSettings.getImageIconMaterial(),
-                displayMetadata.getNameTemplate(),
+                iconName,
                 displayMetadata.getLoreTemplates(),
                 placeholders
             );
@@ -335,7 +418,7 @@ public class GuiService {
             session.getSlotToFilename().put(slot, filename);
         }
 
-        if (filenames.isEmpty()) {
+        if (session.getAllFilenames().isEmpty()) {
             ItemStack emptyIcon = createIcon(
                 localSettings.getEmptyMaterial(),
                 localeService.trRaw(player, "gui.empty-state.name", localSettings.getEmptyName(), Collections.<String, String>emptyMap()),
@@ -343,6 +426,16 @@ public class GuiService {
                 createPagePlaceholders(session, 0)
             );
             inventory.setItem(localSettings.getEmptySlot(), emptyIcon);
+        } else if (filenames.isEmpty() && session.getSearchQuery() != null) {
+            Map<String, String> placeholders = createPagePlaceholders(session, 0);
+            placeholders.put("query", displayQuery(session.getSearchQuery()));
+            ItemStack emptySearch = createIcon(
+                Material.BARRIER,
+                localeService.trRaw(player, "gui.search-empty.name", "&7Nothing found", Collections.<String, String>emptyMap()),
+                localeService.trRawList(player, "gui.search-empty.lore", Collections.singletonList("&8Search: &f{query}"), Collections.<String, String>emptyMap()),
+                placeholders
+            );
+            inventory.setItem(localSettings.getEmptySlot(), emptySearch);
         }
 
         int maxPages = session.getMaxPages(itemsPerPage);
@@ -395,6 +488,20 @@ public class GuiService {
             localeService.trRawList(player, "gui.navigation.info.lore", localSettings.getInfoLore(), Collections.<String, String>emptyMap()),
             createPagePlaceholders(session, filenames.size())
         ));
+
+        if (localSettings.isSearchEnabled()) {
+            inventory.setItem(localSettings.getSearchSlot(), createSearchIcon(player, session));
+        }
+
+        if (localSettings.isEditorEnabled()) {
+            session.getSlotToFilename().remove(Integer.valueOf(localSettings.getEditorSlot()));
+            inventory.setItem(localSettings.getEditorSlot(), createIcon(
+                localSettings.getEditorMaterial(),
+                localeService.trRaw(player, "gui.navigation.editor.name", localSettings.getEditorName(), Collections.<String, String>emptyMap()),
+                localeService.trRawList(player, "gui.navigation.editor.lore", localSettings.getEditorLore(), Collections.<String, String>emptyMap()),
+                Collections.<String, String>emptyMap()
+            ));
+        }
 
         inventory.setItem(localSettings.getCloseSlot(), createIcon(
             localSettings.getCloseMaterial(),
@@ -475,7 +582,7 @@ public class GuiService {
             player.sendMessage(localeService.tr(player, "language-change-unavailable", placeholders));
         }
 
-        openWithData(player, session.getFilenames(), session.getPage());
+        openWithData(player, session.getAllFilenames(), session.getPage(), session.getSearchQuery());
     }
 
     private void addFilenamePlaceholders(Map<String, String> placeholders, String filename) {
@@ -614,6 +721,184 @@ public class GuiService {
             if (localSettings.isClaimLockEnabled()) {
                 claimLocks.remove(playerId);
             }
+        }
+    }
+
+    private void handleSearchClick(Player player, GuiSession session, ClickType clickType) {
+        String query = session.getSearchQuery();
+        boolean active = query != null && !query.isEmpty();
+        if (active && clickType.isLeftClick()) {
+            openWithData(player, session.getAllFilenames(), 1, null);
+            return;
+        }
+        if ((active && clickType.isRightClick()) || (!active && clickType.isLeftClick())) {
+            beginSearchPrompt(player, session);
+        }
+    }
+
+    private void beginSearchPrompt(Player player, GuiSession session) {
+        final int generation = searchGeneration.incrementAndGet();
+        final UUID playerId = player.getUniqueId();
+        searchPrompts.put(playerId, new SearchPrompt(generation, session.getPage(), session.getSearchQuery()));
+        player.closeInventory();
+
+        Map<String, String> placeholders = new HashMap<String, String>();
+        placeholders.put("max_chars", "36");
+        sendLocalized(
+            player,
+            "search-prompt",
+            "Type a search (max {max_chars} characters). cancel to stop.",
+            placeholders
+        );
+
+        corePlugin.getScheduler().runInGame(new Runnable() {
+            @Override
+            public void run() {
+                SearchPrompt current = searchPrompts.get(playerId);
+                if (current != null && current.generation == generation) {
+                    searchPrompts.remove(playerId);
+                }
+            }
+        }, 20L * 60L);
+    }
+
+    private void applySearchPrompt(Player player, SearchPrompt prompt, String text) {
+        if (player == null || !player.isOnline()) {
+            return;
+        }
+
+        String trimmed = text == null ? "" : text.trim();
+        if ("cancel".equalsIgnoreCase(trimmed) || "cancelar".equalsIgnoreCase(trimmed)) {
+            sendLocalized(player, "search-cancelled", "Search cancelled", Collections.<String, String>emptyMap());
+            openMenuKeepingPrompt(player, prompt.page, prompt.query);
+            return;
+        }
+        if (trimmed.isEmpty()) {
+            openMenuKeepingPrompt(player, prompt.page, prompt.query);
+            return;
+        }
+        openMenuKeepingPrompt(player, 1, trimmed);
+    }
+
+    private ItemStack createSearchIcon(Player player, GuiSession session) {
+        AddonSettings localSettings = settings;
+        String query = session.getSearchQuery();
+        Map<String, String> placeholders = createPagePlaceholders(session, session.getFilenames().size());
+        if (query == null || query.isEmpty()) {
+            return createIcon(
+                localSettings.getSearchMaterial(),
+                localeService.trRaw(player, "gui.navigation.search.name", localSettings.getSearchName(), Collections.<String, String>emptyMap()),
+                localeService.trRawList(player, "gui.navigation.search.lore", localSettings.getSearchLore(), Collections.<String, String>emptyMap()),
+                placeholders
+            );
+        }
+
+        placeholders.put("query", displayQuery(query));
+        return createIcon(
+            localSettings.getSearchMaterial(),
+            localeService.trRaw(player, "gui.navigation.search.active-name", localSettings.getSearchActiveName(), Collections.<String, String>emptyMap()),
+            localeService.trRawList(player, "gui.navigation.search.active-lore", localSettings.getSearchActiveLore(), Collections.<String, String>emptyMap()),
+            placeholders
+        );
+    }
+
+    private List<String> filterFilenames(Player player, List<String> filenames, String query) {
+        String needle = normalizeQuery(query);
+        if (needle == null) {
+            return new ArrayList<String>(filenames);
+        }
+
+        AddonSettings localSettings = settings;
+        List<String> filtered = new ArrayList<String>();
+        for (int i = 0; i < filenames.size(); i++) {
+            String filename = filenames.get(i);
+            if (matchesSearch(player, localSettings, filename, needle)) {
+                filtered.add(filename);
+            }
+        }
+        return filtered;
+    }
+
+    private boolean matchesSearch(Player player, AddonSettings localSettings, String filename, String query) {
+        String needle = query.toLowerCase(Locale.ROOT);
+        if (filename != null && filename.toLowerCase(Locale.ROOT).contains(needle)) {
+            return true;
+        }
+
+        String basename = Texts.getBasename(filename).toLowerCase(Locale.ROOT);
+        if (basename.contains(needle)) {
+            return true;
+        }
+
+        String filepath = Texts.getPathWithoutExtension(filename).toLowerCase(Locale.ROOT);
+        if (filepath.contains(needle)) {
+            return true;
+        }
+
+        String plainName = plainDisplayName(player, localSettings, filename);
+        return plainName.toLowerCase(Locale.ROOT).contains(needle);
+    }
+
+    private String plainDisplayName(Player player, AddonSettings localSettings, String filename) {
+        if (localSettings == null || filename == null) {
+            return "";
+        }
+
+        String imageIconNameTemplate = localeService.trRaw(
+            player,
+            "gui.image-icon.name",
+            localSettings.getImageIconNameFormat(),
+            Collections.<String, String>emptyMap()
+        );
+        DisplayMetadataService.DisplayMetadata displayMetadata = displayMetadataService.resolve(
+            player,
+            localSettings,
+            filename,
+            imageIconNameTemplate,
+            Collections.<String>emptyList()
+        );
+        Map<String, String> placeholders = new HashMap<String, String>();
+        addFilenamePlaceholders(placeholders, filename);
+        String resolved = Texts.applyPlaceholders(displayMetadata.getNameTemplate(), placeholders);
+        String stripped = ChatColor.stripColor(resolved);
+        return stripped == null ? "" : stripped;
+    }
+
+    private void sendLocalized(Player player, String key, String fallback, Map<String, String> placeholders) {
+        AddonSettings localSettings = settings;
+        String prefix = localSettings == null ? "" : Texts.applyPlaceholders(localSettings.getPrefix(), placeholders);
+        String body = localeService.trRaw(player, "messages." + key, fallback, placeholders);
+        player.sendMessage(prefix + body);
+    }
+
+    private String normalizeQuery(String query) {
+        if (query == null) {
+            return null;
+        }
+        String trimmed = query.trim();
+        if (trimmed.isEmpty()) {
+            return null;
+        }
+        return trimmed;
+    }
+
+    private String displayQuery(String query) {
+        String shown = query;
+        if (shown.length() > 26) {
+            shown = shown.substring(0, 26);
+        }
+        return shown.replace("&", "").replace("\u00A7", "").replace("{", "").replace("}", "");
+    }
+
+    private static final class SearchPrompt {
+        private final int generation;
+        private final int page;
+        private final String query;
+
+        private SearchPrompt(int generation, int page, String query) {
+            this.generation = generation;
+            this.page = page;
+            this.query = query;
         }
     }
 

@@ -71,6 +71,13 @@ navigation:
   close:
     slot: 53
     material: BARRIER
+  search:
+    enabled: true
+    slot: 46
+    material: SPYGLASS
+  editor:
+    slot: 45
+    material: ITEM_FRAME
   next:
     slot: 51
     material: ARROW

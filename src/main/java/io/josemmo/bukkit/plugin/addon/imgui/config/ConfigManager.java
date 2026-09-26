@@ -136,6 +136,24 @@ public class ConfigManager {
         boolean blockCreativeActions = limits.getBoolean("anti-exploit.block-creative-actions", true);
         boolean claimLockEnabled = limits.getBoolean("anti-exploit.claim-lock-enabled", true);
 
+        boolean searchEnabled = gui.getBoolean("navigation.search.enabled", true);
+        int searchSlot = clamp(gui.getInt("navigation.search.slot", menuRows * 9 - 8), 0, menuRows * 9 - 1);
+        Material searchMaterial = parseMaterial(gui.getString("navigation.search.material", "SPYGLASS"), Material.SPYGLASS);
+        String searchName = "&fSearch";
+        List<String> searchLore = Arrays.asList("&7Filters by name.", "&8Click to type.");
+        String searchActiveName = "&fSearch: {query}";
+        List<String> searchActiveLore = Arrays.asList("&7Right click: search again.", "&7Left click: clear search.");
+
+        boolean editorEnabled = config.getBoolean("editor.enabled", true);
+        int editorMinWidth = clamp(config.getInt("editor.min-width", 1), 1, 30);
+        int editorMaxWidth = clamp(config.getInt("editor.max-width", 30), editorMinWidth, 30);
+        int editorMinHeight = clamp(config.getInt("editor.min-height", 1), 1, 30);
+        int editorMaxHeight = clamp(config.getInt("editor.max-height", 30), editorMinHeight, 30);
+        int editorSlot = clamp(gui.getInt("navigation.editor.slot", menuRows * 9 - 9), 0, menuRows * 9 - 1);
+        Material editorMaterial = parseMaterial(gui.getString("navigation.editor.material", "ITEM_FRAME"), Material.ITEM_FRAME);
+        String editorName = "&fImage editor";
+        List<String> editorLore = Arrays.asList("&7Change width and height", "&8Click to open");
+
         return new AddonSettings(
             enabled,
             usePlayerLocale,
@@ -211,7 +229,23 @@ public class ConfigManager {
             blockCollectToCursor,
             blockDrag,
             blockCreativeActions,
-            claimLockEnabled
+            claimLockEnabled,
+            searchEnabled,
+            searchSlot,
+            searchMaterial,
+            searchName,
+            searchLore,
+            searchActiveName,
+            searchActiveLore,
+            editorEnabled,
+            editorMinWidth,
+            editorMaxWidth,
+            editorMinHeight,
+            editorMaxHeight,
+            editorSlot,
+            editorMaterial,
+            editorName,
+            editorLore
         );
     }
 

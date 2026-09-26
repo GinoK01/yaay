@@ -81,6 +81,22 @@ public class AddonSettings {
     private final boolean blockDrag;
     private final boolean blockCreativeActions;
     private final boolean claimLockEnabled;
+    private final boolean searchEnabled;
+    private final int searchSlot;
+    private final Material searchMaterial;
+    private final String searchName;
+    private final List<String> searchLore;
+    private final String searchActiveName;
+    private final List<String> searchActiveLore;
+    private final boolean editorEnabled;
+    private final int editorMinWidth;
+    private final int editorMaxWidth;
+    private final int editorMinHeight;
+    private final int editorMaxHeight;
+    private final int editorSlot;
+    private final Material editorMaterial;
+    private final String editorName;
+    private final List<String> editorLore;
 
     public AddonSettings(
         boolean enabled,
@@ -157,7 +173,23 @@ public class AddonSettings {
         boolean blockCollectToCursor,
         boolean blockDrag,
         boolean blockCreativeActions,
-        boolean claimLockEnabled
+        boolean claimLockEnabled,
+        boolean searchEnabled,
+        int searchSlot,
+        Material searchMaterial,
+        String searchName,
+        List<String> searchLore,
+        String searchActiveName,
+        List<String> searchActiveLore,
+        boolean editorEnabled,
+        int editorMinWidth,
+        int editorMaxWidth,
+        int editorMinHeight,
+        int editorMaxHeight,
+        int editorSlot,
+        Material editorMaterial,
+        String editorName,
+        List<String> editorLore
     ) {
         this.enabled = enabled;
         this.usePlayerLocale = usePlayerLocale;
@@ -234,6 +266,22 @@ public class AddonSettings {
         this.blockDrag = blockDrag;
         this.blockCreativeActions = blockCreativeActions;
         this.claimLockEnabled = claimLockEnabled;
+        this.searchEnabled = searchEnabled;
+        this.searchSlot = searchSlot;
+        this.searchMaterial = searchMaterial;
+        this.searchName = searchName;
+        this.searchLore = immutableList(searchLore);
+        this.searchActiveName = searchActiveName;
+        this.searchActiveLore = immutableList(searchActiveLore);
+        this.editorEnabled = editorEnabled;
+        this.editorMinWidth = editorMinWidth;
+        this.editorMaxWidth = editorMaxWidth;
+        this.editorMinHeight = editorMinHeight;
+        this.editorMaxHeight = editorMaxHeight;
+        this.editorSlot = editorSlot;
+        this.editorMaterial = editorMaterial;
+        this.editorName = editorName;
+        this.editorLore = immutableList(editorLore);
     }
 
     private static <T> List<T> immutableList(List<T> value) {
@@ -318,4 +366,20 @@ public class AddonSettings {
     public boolean isBlockDrag() { return blockDrag; }
     public boolean isBlockCreativeActions() { return blockCreativeActions; }
     public boolean isClaimLockEnabled() { return claimLockEnabled; }
+    public boolean isSearchEnabled() { return searchEnabled; }
+    public int getSearchSlot() { return searchSlot; }
+    public Material getSearchMaterial() { return searchMaterial; }
+    public String getSearchName() { return searchName; }
+    public List<String> getSearchLore() { return searchLore; }
+    public String getSearchActiveName() { return searchActiveName; }
+    public List<String> getSearchActiveLore() { return searchActiveLore; }
+    public boolean isEditorEnabled() { return editorEnabled; }
+    public int getEditorMinWidth() { return editorMinWidth; }
+    public int getEditorMaxWidth() { return editorMaxWidth; }
+    public int getEditorMinHeight() { return editorMinHeight; }
+    public int getEditorMaxHeight() { return editorMaxHeight; }
+    public int getEditorSlot() { return editorSlot; }
+    public Material getEditorMaterial() { return editorMaterial; }
+    public String getEditorName() { return editorName; }
+    public List<String> getEditorLore() { return editorLore; }
 }

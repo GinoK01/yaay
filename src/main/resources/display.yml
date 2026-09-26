@@ -13,6 +13,8 @@
 # - {filepath}: full relative path in Yamipa images folder without extension
 # - {amount}: stack amount of the claimed item
 # - {width}, {height}: final width/height stored in Yamipa item metadata
+# - If neither placeholder is used in the name or lore, the name gets a gray suffix (WxH) with that real size.
+# - If either placeholder is used, that suffix is not added.
 #
 # Per-entry item options (same behavior as Yamipa command arguments):
 # - amount: same as <amount> in /image give (1..64)

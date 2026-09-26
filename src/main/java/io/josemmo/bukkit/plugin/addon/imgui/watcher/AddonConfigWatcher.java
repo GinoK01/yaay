@@ -38,6 +38,9 @@ public class AddonConfigWatcher extends FileSystemWatcher {
 
     private void notifyIfYaml(Path path) {
         String value = path.getFileName().toString().toLowerCase();
+        if (value.equals("editor-sessions.yml")) {
+            return;
+        }
         if (value.endsWith(".yml")) {
             plugin.onWatchedConfigChange(path);
         }

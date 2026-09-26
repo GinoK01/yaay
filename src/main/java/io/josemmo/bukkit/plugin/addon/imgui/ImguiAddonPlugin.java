@@ -7,6 +7,8 @@ import io.josemmo.bukkit.plugin.addon.imgui.command.ImguiCommand;
 import io.josemmo.bukkit.plugin.addon.imgui.config.AddonSettings;
 import io.josemmo.bukkit.plugin.addon.imgui.config.ConfigManager;
 import io.josemmo.bukkit.plugin.addon.imgui.display.DisplayMetadataService;
+import io.josemmo.bukkit.plugin.addon.imgui.editor.EditorSessionStore;
+import io.josemmo.bukkit.plugin.addon.imgui.gui.EditorService;
 import io.josemmo.bukkit.plugin.addon.imgui.gui.GuiService;
 import io.josemmo.bukkit.plugin.addon.imgui.i18n.LocaleService;
 import io.josemmo.bukkit.plugin.addon.imgui.limits.HourlyLimitService;
@@ -15,6 +17,7 @@ import io.josemmo.bukkit.plugin.addon.imgui.security.InventoryProtectionListener
 import io.josemmo.bukkit.plugin.addon.imgui.watcher.AddonConfigWatcher;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.nio.file.Path;
@@ -25,6 +28,7 @@ public class ImguiAddonPlugin extends JavaPlugin {
     private DisplayMetadataService displayMetadataService;
     private HourlyLimitService hourlyLimitService;
     private GuiService guiService;
+    private EditorService editorService;
     private ImguiLanguageService languageService;
     private AddonConfigWatcher configWatcher;
     private volatile AddonSettings settings;
@@ -40,6 +44,14 @@ public class ImguiAddonPlugin extends JavaPlugin {
         displayMetadataService = new DisplayMetadataService(getDataFolder(), localeService);
         hourlyLimitService = new HourlyLimitService();
         guiService = new GuiService(this, YamipaPlugin.getInstance(), localeService, displayMetadataService, hourlyLimitService);
+        editorService = new EditorService(
+            this,
+            YamipaPlugin.getInstance(),
+            localeService,
+            displayMetadataService,
+            new EditorSessionStore(getDataFolder(), getLogger())
+        );
+        guiService.setEditorService(editorService);
 
         boolean loaded = reloadInternal(null, false, true);
         if (!loaded) {
@@ -52,6 +64,7 @@ public class ImguiAddonPlugin extends JavaPlugin {
 
         InventoryProtectionListener inventoryProtectionListener = new InventoryProtectionListener(this, guiService);
         getServer().getPluginManager().registerEvents(inventoryProtectionListener, this);
+        getServer().getPluginManager().registerEvents(editorService, this);
         getServer().getPluginManager().registerEvents(
             new DroppedImageItemMetadataListener(guiService, localeService, displayMetadataService),
             this
@@ -65,6 +78,9 @@ public class ImguiAddonPlugin extends JavaPlugin {
         }
 
         reconfigureWatcher();
+        for (Player player : getServer().getOnlinePlayers()) {
+            editorService.deliverPending(player);
+        }
         getLogger().info("YAAY enabled");
     }
 
@@ -73,6 +89,9 @@ public class ImguiAddonPlugin extends JavaPlugin {
         if (configWatcher != null) {
             configWatcher.stopWatching();
             configWatcher = null;
+        }
+        if (editorService != null) {
+            editorService.shutdown();
         }
         if (guiService != null) {
             guiService.closeAllMenus();
@@ -118,6 +137,9 @@ public class ImguiAddonPlugin extends JavaPlugin {
             displayMetadataService.reload();
             settings = newSettings;
             guiService.applySettings(newSettings);
+            if (editorService != null) {
+                editorService.applySettings(newSettings);
+            }
             reconfigureWatcher();
 
             if (!startup) {

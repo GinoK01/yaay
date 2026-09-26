@@ -33,3 +33,10 @@ reload:
   close-open-menus: false
   auto-reload-enabled: true
   auto-reload-debounce-ms: 800
+
+editor:
+  enabled: true
+  min-width: 1
+  max-width: 30
+  min-height: 1
+  max-height: 30

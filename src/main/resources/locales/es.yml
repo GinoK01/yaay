@@ -15,6 +15,14 @@ messages:
   language-changed: "Idioma cambiado a {language}"
   language-change-cooldown: "Espera {remaining_seconds}s antes de cambiar idioma otra vez"
   language-change-unavailable: "No se pudo cambiar el idioma"
+  search-prompt: "Escribe una busqueda (max. {max_chars} caracteres). cancel o cancelar para salir."
+  search-cancelled: "Busqueda cancelada"
+  editor-invalid-item: "Ese item no es una imagen de Yamipa"
+  editor-no-image: "Primero coloca una imagen en el editor"
+  editor-apply-failed: "No se pudo modificar la imagen. Se devolvio el item original"
+  editor-applied: "Imagen actualizada: {width}x{height}"
+  editor-dropped: "No habia espacio. El item se solto en el suelo"
+  editor-cancelled: "Edicion cancelada. Item devuelto"
 
 gui:
   title: "&0Menu de Imagenes"
@@ -49,6 +57,20 @@ gui:
       name: "&cCerrar"
       lore:
         - "&7Cerrar este menu"
+    search:
+      name: "&fBuscar"
+      lore:
+        - "&7Filtra por nombre."
+        - "&8Clic para escribir."
+      active-name: "&fBusqueda: {query}"
+      active-lore:
+        - "&7Clic derecho: buscar de nuevo."
+        - "&7Clic izquierdo: quitar filtro."
+    editor:
+      name: "&fEditor de imagenes"
+      lore:
+        - "&7Cambia el ancho y el alto"
+        - "&8Clic para abrir"
     next:
       name: "&ePagina siguiente"
       lore:
@@ -57,6 +79,47 @@ gui:
     name: "&7No hay imagenes disponibles"
     lore:
       - "&8Intenta nuevamente mas tarde"
+  search-empty:
+    name: "&7No se encontro nada"
+    lore:
+      - "&8Busqueda: &f{query}"
+  editor:
+    title: "&0Editor de imagenes"
+    info:
+      name: "&fImagen"
+      lore:
+        - "&7Archivo: &f{filename}"
+        - "&7Actual: &f{current_width}x{current_height}"
+        - "&7Nuevo: &f{width}x{height}"
+    info-empty:
+      name: "&fImagen"
+      lore:
+        - "&7Coloca un item de imagen aqui"
+        - "&8Tiene que ser una imagen de Yamipa"
+    width-decrease:
+      name: "&c- Ancho"
+      lore:
+        - "&7Ancho: &f{width}"
+    width-increase:
+      name: "&a+ Ancho"
+      lore:
+        - "&7Ancho: &f{width}"
+    height-decrease:
+      name: "&c- Alto"
+      lore:
+        - "&7Alto: &f{height}"
+    height-increase:
+      name: "&a+ Alto"
+      lore:
+        - "&7Alto: &f{height}"
+    apply:
+      name: "&aAplicar"
+      lore:
+        - "&7Confirmar {width}x{height}"
+    cancel:
+      name: "&cCancelar"
+      lore:
+        - "&7Devolver el item original"
 
 item:
   name-format: "&b{filename}"

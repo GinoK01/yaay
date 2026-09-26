@@ -15,6 +15,14 @@ messages:
   language-changed: "Language changed to {language}"
   language-change-cooldown: "Please wait {remaining_seconds}s before changing language again"
   language-change-unavailable: "Language could not be changed"
+  search-prompt: "Type a search (max {max_chars} characters). cancel to stop."
+  search-cancelled: "Search cancelled"
+  editor-invalid-item: "That item is not a Yamipa image"
+  editor-no-image: "Place an image in the editor first"
+  editor-apply-failed: "Could not update the image. The original item was returned"
+  editor-applied: "Image updated: {width}x{height}"
+  editor-dropped: "Inventory is full. The item was dropped"
+  editor-cancelled: "Edit cancelled. Item returned"
 
 gui:
   title: "&0Image Claim Menu"
@@ -49,6 +57,20 @@ gui:
       name: "&cClose"
       lore:
         - "&7Close this menu"
+    search:
+      name: "&fSearch"
+      lore:
+        - "&7Filters by name."
+        - "&8Click to type."
+      active-name: "&fSearch: {query}"
+      active-lore:
+        - "&7Right click: search again."
+        - "&7Left click: clear search."
+    editor:
+      name: "&fImage editor"
+      lore:
+        - "&7Change width and height"
+        - "&8Click to open"
     next:
       name: "&eNext page"
       lore:
@@ -57,6 +79,47 @@ gui:
     name: "&7No available images"
     lore:
       - "&8Try again later"
+  search-empty:
+    name: "&7Nothing found"
+    lore:
+      - "&8Search: &f{query}"
+  editor:
+    title: "&0Image editor"
+    info:
+      name: "&fImage"
+      lore:
+        - "&7File: &f{filename}"
+        - "&7Current: &f{current_width}x{current_height}"
+        - "&7New: &f{width}x{height}"
+    info-empty:
+      name: "&fImage"
+      lore:
+        - "&7Place an image item here"
+        - "&8It must be a Yamipa image"
+    width-decrease:
+      name: "&c- Width"
+      lore:
+        - "&7Width: &f{width}"
+    width-increase:
+      name: "&a+ Width"
+      lore:
+        - "&7Width: &f{width}"
+    height-decrease:
+      name: "&c- Height"
+      lore:
+        - "&7Height: &f{height}"
+    height-increase:
+      name: "&a+ Height"
+      lore:
+        - "&7Height: &f{height}"
+    apply:
+      name: "&aApply"
+      lore:
+        - "&7Confirm {width}x{height}"
+    cancel:
+      name: "&cCancel"
+      lore:
+        - "&7Return the original item"
 
 item:
   name-format: "&b{filename}"

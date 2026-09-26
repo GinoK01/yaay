@@ -3,6 +3,7 @@ package io.josemmo.bukkit.plugin.addon.imgui.security;
 import io.josemmo.bukkit.plugin.addon.imgui.ImguiAddonPlugin;
 import io.josemmo.bukkit.plugin.addon.imgui.config.AddonSettings;
 import io.josemmo.bukkit.plugin.addon.imgui.gui.GuiService;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,6 +15,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.InventoryView;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
 public class InventoryProtectionListener implements Listener {
     private final ImguiAddonPlugin plugin;
@@ -22,6 +24,15 @@ public class InventoryProtectionListener implements Listener {
     public InventoryProtectionListener(ImguiAddonPlugin plugin, GuiService guiService) {
         this.plugin = plugin;
         this.guiService = guiService;
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onSearchChat(AsyncChatEvent event) {
+        Player player = event.getPlayer();
+        String text = PlainTextComponentSerializer.plainText().serialize(event.message());
+        if (guiService.consumeSearchChat(player, text)) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)

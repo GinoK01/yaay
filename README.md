@@ -2,7 +2,7 @@
 
 Yes, Another Addon for Yamipa.
 
-YAAY adds the /imgui menu flow to Yamipa with a paginated GUI, anti-exploit protections, hourly limits, language support, and per-path overrides.
+YAAY adds the /imgui menu flow to Yamipa with a paginated GUI, image search, an image-size editor, anti-exploit protections, hourly limits, language support, and per-path overrides.
 
 <p align="center">
     <a href="imgur.com/a/W5IZJDc"><img src="https://i.imgur.com/fe19mi6.gif" autoplay loop muted playsinline></img></a>
@@ -17,8 +17,10 @@ This project is released under the MIT License, same as Yamipa.
 
 ## Features
 
-- /imgui and /imgui reload commands
+- /imgui and /imgui reload
 - Paginated inventory GUI
+- Search by name from the claim menu (spyglass)
+- Image size editor from the claim menu (item frame button)
 - Visibility filtering by path patterns (public/private)
 - Claim cooldown and hourly limits
 - Player language selector with persistence
@@ -49,10 +51,12 @@ Standalone build flow:
 
 ## Commands and permissions
 
-- /imgui
-- /imgui reload
-- yamipa.imgui.use
-- yamipa.imgui.reload
+- `/imgui` — open the menu (search and editor are buttons inside it)
+- `/imgui reload`
+- `yamipa.imgui.use` — use the menu, search, and editor (default: true)
+- `yamipa.imgui.reload` — reload config (default: op)
+
+No extra commands or permissions for search or the editor.
 
 ## Documentation
 
