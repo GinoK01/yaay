@@ -145,6 +145,7 @@ public class ConfigManager {
         List<String> searchActiveLore = Arrays.asList("&7Right click: search again.", "&7Left click: clear search.");
 
         boolean editorEnabled = config.getBoolean("editor.enabled", true);
+        String editorPermission = config.getString("editor.permission", "yamipa.imgui.editor");
         int editorMinWidth = clamp(config.getInt("editor.min-width", 1), 1, 30);
         int editorMaxWidth = clamp(config.getInt("editor.max-width", 30), editorMinWidth, 30);
         int editorMinHeight = clamp(config.getInt("editor.min-height", 1), 1, 30);
@@ -238,6 +239,7 @@ public class ConfigManager {
             searchActiveName,
             searchActiveLore,
             editorEnabled,
+            editorPermission,
             editorMinWidth,
             editorMaxWidth,
             editorMinHeight,

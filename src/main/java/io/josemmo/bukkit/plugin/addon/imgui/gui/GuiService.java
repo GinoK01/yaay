@@ -181,9 +181,14 @@ public class GuiService {
         }
 
         if (localSettings.isEditorEnabled() && rawSlot == localSettings.getEditorSlot()) {
-            if (editorService != null) {
-                editorService.openEditor(player);
+            if (editorService == null) {
+                return;
             }
+            if (!player.hasPermission(localSettings.getEditorPermission())) {
+                player.sendMessage(localeService.tr(player, "no-permission"));
+                return;
+            }
+            editorService.openEditor(player);
             return;
         }
 
@@ -493,7 +498,7 @@ public class GuiService {
             inventory.setItem(localSettings.getSearchSlot(), createSearchIcon(player, session));
         }
 
-        if (localSettings.isEditorEnabled()) {
+        if (localSettings.isEditorEnabled() && player.hasPermission(localSettings.getEditorPermission())) {
             session.getSlotToFilename().remove(Integer.valueOf(localSettings.getEditorSlot()));
             inventory.setItem(localSettings.getEditorSlot(), createIcon(
                 localSettings.getEditorMaterial(),

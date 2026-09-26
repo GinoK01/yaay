@@ -89,6 +89,7 @@ public class AddonSettings {
     private final String searchActiveName;
     private final List<String> searchActiveLore;
     private final boolean editorEnabled;
+    private final String editorPermission;
     private final int editorMinWidth;
     private final int editorMaxWidth;
     private final int editorMinHeight;
@@ -182,6 +183,7 @@ public class AddonSettings {
         String searchActiveName,
         List<String> searchActiveLore,
         boolean editorEnabled,
+        String editorPermission,
         int editorMinWidth,
         int editorMaxWidth,
         int editorMinHeight,
@@ -274,6 +276,7 @@ public class AddonSettings {
         this.searchActiveName = searchActiveName;
         this.searchActiveLore = immutableList(searchActiveLore);
         this.editorEnabled = editorEnabled;
+        this.editorPermission = editorPermission;
         this.editorMinWidth = editorMinWidth;
         this.editorMaxWidth = editorMaxWidth;
         this.editorMinHeight = editorMinHeight;
@@ -374,6 +377,7 @@ public class AddonSettings {
     public String getSearchActiveName() { return searchActiveName; }
     public List<String> getSearchActiveLore() { return searchActiveLore; }
     public boolean isEditorEnabled() { return editorEnabled; }
+    public String getEditorPermission() { return editorPermission; }
     public int getEditorMinWidth() { return editorMinWidth; }
     public int getEditorMaxWidth() { return editorMaxWidth; }
     public int getEditorMinHeight() { return editorMinHeight; }

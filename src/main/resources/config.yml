@@ -36,6 +36,7 @@ reload:
 
 editor:
   enabled: true
+  permission: yamipa.imgui.editor
   min-width: 1
   max-width: 30
   min-height: 1

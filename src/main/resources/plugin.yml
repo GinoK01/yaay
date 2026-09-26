@@ -16,5 +16,7 @@ commands:
 permissions:
   yamipa.imgui.use:
     default: true
+  yamipa.imgui.editor:
+    default: true
   yamipa.imgui.reload:
     default: op

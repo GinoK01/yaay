@@ -53,10 +53,9 @@ Standalone build flow:
 
 - `/imgui` — open the menu (search and editor are buttons inside it)
 - `/imgui reload`
-- `yamipa.imgui.use` — use the menu, search, and editor (default: true)
+- `yamipa.imgui.use` — use the menu and search (default: true)
+- `yamipa.imgui.editor` — use the image size editor (default: true)
 - `yamipa.imgui.reload` — reload config (default: op)
-
-No extra commands or permissions for search or the editor.
 
 ## Documentation
 
