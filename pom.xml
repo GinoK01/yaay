@@ -12,7 +12,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <yamipa.core.version>1.4.1</yamipa.core.version>
+        <yamipa.core.version>1.4.2</yamipa.core.version>
         <yamipa.core.jar>${project.basedir}/../yamipa/target/YamipaPlugin-${yamipa.core.version}.jar</yamipa.core.jar>
     </properties>
 

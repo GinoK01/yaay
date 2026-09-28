@@ -12,6 +12,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,7 +57,24 @@ public class LocaleService {
         for (File file : files) {
             String name = file.getName();
             String lang = name.substring(0, name.length() - 4).toLowerCase(Locale.ROOT);
-            localeFiles.put(lang, YamlConfiguration.loadConfiguration(file));
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+            applyBundledDefaults(config, lang);
+            localeFiles.put(lang, config);
+        }
+    }
+
+    private void applyBundledDefaults(YamlConfiguration config, String lang) {
+        InputStream resource = plugin.getResource("locales/" + lang + ".yml");
+        if (resource == null) {
+            return;
+        }
+        try {
+            config.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(resource, StandardCharsets.UTF_8)));
+        } finally {
+            try {
+                resource.close();
+            } catch (Exception ignored) {
+            }
         }
     }
 
